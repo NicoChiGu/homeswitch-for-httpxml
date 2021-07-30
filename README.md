@@ -1,6 +1,6 @@
 # homeswitch-for-httpxml
-design by TERACHIGU 
-TOOLS: Duinoedu EXT UI
+design by TERACHIGU
+#### TOOLS: Duinoedu EXT UI
 ### use homebridge-http-switch control ESP8266
 
 ###  [homebridge-http-switch](https://github.com/Supereg/homebridge-http-switch)
