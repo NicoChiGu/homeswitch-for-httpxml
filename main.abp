@@ -61,7 +61,6 @@ String buildJavascript(){
   javaScript+="document.getElementById('CHINATIME').innerHTML = this.responseXML.getElementsByTagName('CHINATIME')[0].childNodes[0].nodeValue\n";
   javaScript+="document.getElementById('IO_D2').innerHTML = this.responseXML.getElementsByTagName('IO_D2')[0].childNodes[0].nodeValue\n";
   javaScript+="document.getElementById('IO_D3').innerHTML = this.responseXML.getElementsByTagName('IO_D3')[0].childNodes[0].nodeValue\n";
-  /* javaScript+="document.postElementById('IO_D2').innerHTML = this.responseXML.getElementsByTagName('IO_D2')[0].childNodes[0].nodeValue\n"; */
   javaScript+=MonEsp.javaScript_end();
   return javaScript;
 }
@@ -114,15 +113,15 @@ void loop()
 
 #endif
   CHINATIME=NTP.getTimeStr();
-  int buttonStateD2 = digitalRead(D2); //printf
-  int buttonStateD3 = digitalRead(D3); //printf
+  int buttonStateD2 = digitalRead(D2);
+  int buttonStateD3 = digitalRead(D3);
   IO_D2=buttonStateD2;
   IO_D3=buttonStateD3;
   
   if (buttonStateD3 == 0)
   {
   digitalWrite(D2 , HIGH);
-  A = 1;//开关状态设1
+  A = 1;
   delay(5);
   return ; 
   }
