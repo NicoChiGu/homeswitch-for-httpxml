@@ -1,0 +1,142 @@
+#include <Duinoedu_Esp8266.h>
+#include <TimeLib.h>
+#include <NtpClientLib.h>
+
+Duinoedu_Esp8266 MonEsp;
+static const uint8_t D0   = 16;
+static const uint8_t D1   = 5;
+static const uint8_t D2   = 4;
+static const uint8_t D3   = 0;
+static const uint8_t D4   = 2;
+static const uint8_t D5   = 14;
+static const uint8_t D6   = 12;
+static const uint8_t D7   = 13;
+static const uint8_t D8   = 15;
+static const uint8_t D9   = 3;
+static const uint8_t D10  = 1;
+
+ESP8266WebServer server ( 80 );
+String CHINATIME="";
+
+void handleXML2(){
+    server.send(200,"text/xml2",buildXML2());
+}
+
+void handleXML(){
+  server.send(200,"text/xml",buildXML());
+}
+
+String IO_D2="";
+String IO_D3="";
+int LED;
+short A;
+
+void setup()
+{
+  MonEsp.connect_STA_SetIP_smart("*","*",IPAddress (*),IPAddress (*),IPAddress (*));
+  NTP.begin("cn.ntp.org.cn", 7, true); 
+  NTP.setInterval(60);
+  server.on ( "/", handleRoot );
+  server.begin();  
+  Serial.println ( "HTTP server started" );
+  Serial.println ( "ESP8266 Status: RUNNING" );
+  server.on ( "/xml", handleXML );
+  server.on ( "/xml2", handleXML2 );
+  pinMode( D2 , OUTPUT); //D2 WAS Output PIN
+  pinMode( D3 , INPUT); //D3 Was Control PIN
+}
+
+void handleRoot(){
+
+
+
+  MonEsp.updateStringint(&server,"LED", LED);
+  server.send ( 200, "text/html", getPage() );
+  delay(10);
+  
+}
+
+String buildJavascript(){
+  String javaScript=MonEsp.javaScript_start();
+  javaScript+="document.getElementById('CHINATIME').innerHTML = this.responseXML.getElementsByTagName('CHINATIME')[0].childNodes[0].nodeValue\n";
+  javaScript+="document.getElementById('IO_D2').innerHTML = this.responseXML.getElementsByTagName('IO_D2')[0].childNodes[0].nodeValue\n";
+  javaScript+="document.getElementById('IO_D3').innerHTML = this.responseXML.getElementsByTagName('IO_D3')[0].childNodes[0].nodeValue\n";
+  /* javaScript+="document.postElementById('IO_D2').innerHTML = this.responseXML.getElementsByTagName('IO_D2')[0].childNodes[0].nodeValue\n"; */
+  javaScript+=MonEsp.javaScript_end();
+  return javaScript;
+}
+
+String buildXML(){
+  String XML="<?xml version='1.0'?><inputs>"; 
+  XML+="<CHINATIME>";
+  XML+=CHINATIME;
+  XML+="</CHINATIME>";
+  XML+="<IO_D2>";
+  XML+=IO_D2;
+  XML+="</IO_D2>";
+  XML+="<IO_D3>";
+  XML+=IO_D3;
+  XML+="</IO_D3>";
+  XML+="</inputs>";
+  return XML;
+}
+
+String buildXML2(){
+  String XML2="";
+  XML2+=IO_D2;
+  return XML2;
+}
+
+String getPage(){
+#define PAGE_EXIST
+  String  page = "<!DOCTYPE html><html><head><meta charset='ISO-8859-15'>";
+  page += "<title>ESP8266-HOMELIGHT</title></head>";
+  page += MonEsp.addPhoneStyle();
+  page += "<BODY onload='process()'>";        
+  page += "<h2>ESP_B7FEA7 - HOME-TOPLIGHT</h2>";
+  page += buildJavascript();
+  page += "CHINATIME = <A class=value id='CHINATIME'></A> <hr>";
+  page += buildJavascript();
+  page += "IO_D2 = <A class=value id='IO_D2'></A> IO_D3 = <A class=value id='IO_D3'></A> <hr>";
+  page += MonEsp.javaslider();
+  page += MonEsp.slider(0,1,"LED""");
+  page += "</body>";
+  page += "</html>";
+  return page;
+}
+
+
+void loop()
+{
+#ifdef PAGE_EXIST
+  server.handleClient();
+  delay(10);
+
+#endif
+  CHINATIME=NTP.getTimeStr();
+  int buttonStateD2 = digitalRead(D2); //printf
+  int buttonStateD3 = digitalRead(D3); //printf
+  IO_D2=buttonStateD2;
+  IO_D3=buttonStateD3;
+  
+  if (buttonStateD3 == 0)
+  {
+  digitalWrite(D2 , HIGH);
+  A = 1;//开关状态设1
+  delay(5);
+  return ; 
+  }
+  else
+  {
+    if (A == 1)
+    {
+    LED = 0;
+    digitalWrite(D2 , LED);
+    A = 0;
+    return ;  
+    }
+    else {
+        digitalWrite(D2 , LED);
+    }
+  } 
+}
