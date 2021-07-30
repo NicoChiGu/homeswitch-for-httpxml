@@ -6,6 +6,9 @@ design by TERACHIGU
 ###  [homebridge-http-switch](https://github.com/Supereg/homebridge-http-switch)
 ### Arduino Lib Use "Duinoedu" And Development board Drivers
 
+### [Source code reference](https://github.com/NicoChiGu/homeswitch-for-httpxml/blob/main/main.abp)
+
+
 ## Control mode:
 ```json
 WEB_Contorl: "http://YOUIP:PORT"
