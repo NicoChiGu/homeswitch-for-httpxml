@@ -6,7 +6,8 @@
 
 ## Control mode:
 ```json
-LED_ON:  "http://YOUIP:PORT/?LED=1"
-LED_OFF: "http://YOUIP:PORT/?LED=0"
-Status:  "http://YOUIP:PORT/xml2"
+WEB_Contorl: "http://YOUIP:PORT"
+LED_ON:      "http://YOUIP:PORT/?LED=1"
+LED_OFF:     "http://YOUIP:PORT/?LED=0"
+Status:      "http://YOUIP:PORT/xml2"
 ```
